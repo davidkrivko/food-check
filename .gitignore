@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+.idea
 # Distribution / packaging
 .Python
 build/
@@ -50,7 +50,6 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
-
 # Translations
 *.mo
 *.pot
@@ -127,7 +126,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-
+media/pdf/*
 # Spyder project settings
 .spyderproject
 .spyproject
