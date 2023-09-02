@@ -1,4 +1,4 @@
-version: '3'
+version: '3.11'
 
 services:
   postgres:
@@ -21,3 +21,16 @@ services:
       - "8080:80"
     volumes:
       - .:/app
+
+  celery:
+    environment:
+      DOCKER_ENV: true
+    volumes:
+      - .:/app
+      - ./media:/media
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: celery -A food_service.celery:app worker --loglevel=info
+    depends_on:
+      - redis
