@@ -36,9 +36,9 @@ class CreateOrderApiView(views.APIView):
 
             res_checks = create_check_for_order(order)
 
-            response = CheckModelSerializer(res_checks, many=True)
-
-            return Response(response.data, status=status.HTTP_201_CREATED)
+            serializer = CheckModelSerializer(res_checks, many=True)
+            response = {"message": "Checks processed!", "data": serializer.data}
+            return Response(response, status=status.HTTP_201_CREATED)
 
 
 class PrintNewChecksApiView(views.APIView):
@@ -46,10 +46,15 @@ class PrintNewChecksApiView(views.APIView):
         # Fetch new checks for the given printer
         checks = CheckModel.objects.filter(printer__api_key=api_key, status="rendered")
         for check in checks:
-
             self.print_check(check)
 
-        return Response({"message": "Checks processed."}, status=status.HTTP_200_OK)
+        serializer = CheckModelSerializer(checks, many=True)
+
+        response = {
+            "message": "Successfully create checks!",
+            "data": serializer.data
+        }
+        return Response(response, status=status.HTTP_200_OK)
 
     def get_pdf_content(self, check):
         with open(check.pdf_file.path, "rb") as pdf:
