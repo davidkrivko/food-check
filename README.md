@@ -35,6 +35,7 @@ The renowned "Жрачка топ" delivery restaurant chain now introduces a mo
 2. **Set Up Environment Variables**:
     ```
    cp .env.example .env
+   cp .env.example .env.docker
     ```
 3. **Launch Docker Services**:
     ```
