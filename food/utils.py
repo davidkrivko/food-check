@@ -1,11 +1,11 @@
-from food.models import CheckModel, PrinterModel
+from food.models import CheckModel
 from food.tasks import generate_pdf
 
 
 def create_checks_for_order(order, printers):
     # Calculate the total for the order
     order["total"] = sum(
-        dish["amount"] * dish["price"]
+        dish["quantity"] * dish["price"]
         for dish in order["dishes"]
     )
 

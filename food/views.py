@@ -2,7 +2,11 @@ from rest_framework import status, views, generics
 from rest_framework.response import Response
 
 from food.models import CheckModel, PrinterModel
-from food.serializers import CheckCreateModelSerializer, CheckModelSerializer
+from food.serializers import (
+    CheckCreateSerializer,
+    CheckModelSerializer,
+    CheckDetailSerializer,
+)
 from food.utils import create_checks_for_order
 
 
@@ -14,9 +18,17 @@ class ListChecksApiView(generics.ListAPIView):
         return CheckModel.objects.filter(printer__point_id=point_id)
 
 
-class CreateOrderApiView(views.APIView):
-    def post(self, request):
-        serializer = CheckCreateModelSerializer(data=request.data)
+class RetrieveChecksApiView(generics.RetrieveAPIView):
+    serializer_class = CheckDetailSerializer
+    queryset = CheckModel.objects.all()
+
+
+class CreateOrderApiView(generics.CreateAPIView):
+    queryset = CheckModel.objects.all()
+    serializer_class = CheckCreateSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
             order = serializer.validated_data.get("order")
@@ -39,12 +51,14 @@ class CreateOrderApiView(views.APIView):
 
             res_checks = create_checks_for_order(order, printers)
 
-            serializer = CheckModelSerializer(res_checks, many=True)
+            output_serializer = CheckModelSerializer(res_checks, many=True)
             response = {
                 "message": "Checks processed!",
-                "data": serializer.data
+                "data": output_serializer.data
             }
             return Response(response, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class PrintNewChecksApiView(views.APIView):
