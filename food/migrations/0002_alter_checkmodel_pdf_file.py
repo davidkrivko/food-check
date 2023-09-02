@@ -14,7 +14,9 @@ class Migration(migrations.Migration):
             model_name="checkmodel",
             name="pdf_file",
             field=models.FileField(
-                blank=True, null=True, upload_to=food.file_path.get_pdf_file_path
+                blank=True,
+                null=True,
+                upload_to=food.file_path.get_pdf_file_path,
             ),
         ),
     ]

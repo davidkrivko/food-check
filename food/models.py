@@ -22,9 +22,7 @@ class CheckModel(models.Model):
     )
     order = models.JSONField()
     printer = models.ForeignKey(
-        "PrinterModel",
-        on_delete=models.CASCADE,
-        related_name="checks"
+        "PrinterModel", on_delete=models.CASCADE, related_name="checks"
     )
 
     pdf_file = models.FileField(
@@ -34,4 +32,8 @@ class CheckModel(models.Model):
     )
 
     def __str__(self):
-        return f"id: {self.id} | order: {self.order['id']} | printer: {self.printer.api_key}"
+        return (
+            f"id: {self.id} |"
+            f"order: {self.order['id']} |"
+            f"printer: {self.printer.api_key}"
+        )

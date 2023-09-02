@@ -14,25 +14,36 @@ from food_service.settings import WKHTMLTOPDF_SERVICE_URL, MEDIA_ROOT
 def generate_pdf(check_id):
     try:
         instance = CheckModel.objects.get(pk=check_id)
-    except:
-        return
+    except Exception as e:
+        return e
 
     if instance.status == "rendered":
         return
 
     if instance.type == "client":
-        rendered_html = render_to_string("checks/client_pattern.html", {"order": instance.order})
+        rendered_html = render_to_string(
+            "checks/client_pattern.html",
+            {"order": instance.order}
+        )
     elif instance.type == "kitchen":
-        rendered_html = render_to_string("checks/kitchen_pattern.html", {"order": instance.order})
+        rendered_html = render_to_string(
+            "checks/kitchen_pattern.html",
+            {"order": instance.order}
+        )
     else:
         return
 
-    encoded_html = base64.b64encode(rendered_html.encode('utf-8')).decode('utf-8')
+    encoded_html = base64.b64encode(
+        rendered_html.encode('utf-8')
+    ).decode('utf-8')
 
     payload = {"contents": encoded_html}
     headers = {"Content-Type": "application/json"}
 
-    response = requests.post(WKHTMLTOPDF_SERVICE_URL, json=payload, headers=headers)
+    response = requests.post(
+        WKHTMLTOPDF_SERVICE_URL,
+        json=payload, headers=headers
+    )
 
     if response.status_code == 200:
         relative_path = get_pdf_file_path(instance)
